@@ -57,7 +57,6 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
     name: 'Y1'
     tier: 'Dynamic'
   }
-  properties: {}
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
@@ -121,7 +120,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
 
 resource applicationInsights 'Microsoft.Insights/components@2020-02-02' = {
   name: applicationInsightsName
-  location: appInsightsLocation
+  location: location
   kind: 'web'
   properties: {
     Application_Type: 'web'
