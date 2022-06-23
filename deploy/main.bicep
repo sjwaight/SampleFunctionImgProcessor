@@ -26,6 +26,10 @@ param imageStorageAccountName string
 @description('The Computer Vision account name.')
 param cognitiveServicesAccountName string
 
+@description('The Computer Vision account key.')
+@secure()
+param cognitiveServicesAccountKey string
+
 var functionAppName = appName
 var hostingPlanName = appName
 var applicationInsightsName = appName
@@ -56,16 +60,6 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   sku: {
     name: 'Y1'
     tier: 'Dynamic'
-  }
-}
-
-resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
-  name: cognitiveServicesAccountName
-  location: location
-  kind: 'ComputerVision'
-
-  sku: {
-    name: 'F0'
   }
 }
 
@@ -123,11 +117,11 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'COMPUTER_VISION_ENDPOINT'
-          value: cognitiveServicesAccount.properties.endpoint 
+          value: cognitiveServicesAccountName
         }
         {
           name: 'COMPUTER_VISION_SUBSCRIPTION_KEY'
-          value: cognitiveServicesAccount.listKeys().key1
+          value: cognitiveServicesAccountKey
         }
       ]
       ftpsState: 'Disabled'
