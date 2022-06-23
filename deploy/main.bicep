@@ -23,6 +23,9 @@ param runtime string = 'dotnet'
 @description('The storage account name for the storage account used to store uploaded and processed images.')
 param imageStorageAccountName string
 
+@description('The Computer Vision account name.')
+param cognitiveServicesAccountName string
+
 var functionAppName = appName
 var hostingPlanName = appName
 var applicationInsightsName = appName
@@ -56,6 +59,15 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
   }
 }
 
+resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
+  name: cognitiveServicesAccountName
+  location: location
+  kind: 'Computer Vision'
+  sku: {
+    name: 'F0'
+  }
+}
+
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   name: functionAppName
   location: location
@@ -66,6 +78,7 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
   properties: {
     serverFarmId: hostingPlan.id
     siteConfig: {
+      netFrameworkVersion: 'v6.0'
       appSettings: [
         {
           name: 'AzureWebJobsStorage'
@@ -106,6 +119,14 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         {
           name: 'IMAGE_STORAGE_ACCOUNT_KEY'
           value: imageStorageAccount.listKeys().keys[0].value
+        }
+        {
+          name: 'COMPUTER_VISION_ENDPOINT'
+          value: cognitiveServicesAccount.extendedLocation.endpoints[0].endpoint
+        }
+        {
+          name: 'COMPUTER_VISION_SUBSCRIPTION_KEY'
+          value: cognitiveServicesAccount.properties.primaryKey
         }
       ]
       ftpsState: 'Disabled'
