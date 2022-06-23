@@ -62,10 +62,6 @@ resource hostingPlan 'Microsoft.Web/serverfarms@2021-03-01' = {
 resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2022-03-01' = {
   name: cognitiveServicesAccountName
   location: location
-  kind: 'Computer Vision'
-  sku: {
-    name: 'F0'
-  }
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
