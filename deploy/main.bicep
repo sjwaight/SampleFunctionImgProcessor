@@ -63,6 +63,10 @@ resource cognitiveServicesAccount 'Microsoft.CognitiveServices/accounts@2022-03-
   name: cognitiveServicesAccountName
   location: location
   kind: 'ComputerVision'
+
+  sku: {
+    name: 'F0'
+  }
 }
 
 resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
@@ -119,11 +123,11 @@ resource functionApp 'Microsoft.Web/sites@2021-03-01' = {
         }
         {
           name: 'COMPUTER_VISION_ENDPOINT'
-          value: cognitiveServicesAccount.extendedLocation.endpoints[0].endpoint
+          value: cognitiveServicesAccount.properties.endpoint 
         }
         {
           name: 'COMPUTER_VISION_SUBSCRIPTION_KEY'
-          value: cognitiveServicesAccount.properties.primaryKey
+          value: cognitiveServicesAccount.listKeys().key1
         }
       ]
       ftpsState: 'Disabled'
